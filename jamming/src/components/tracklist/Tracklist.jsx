@@ -1,8 +1,8 @@
 /** @format */
 
 import React from "react";
-import "./Tracklist.css";
-import Track from "../track/Track";
+import "./tracklist.css";
+import Track from "../track/Track.jsx";
 
 class Tracklist extends React.Component {
  render() {

@@ -1,8 +1,8 @@
 /** @format */
 
 import React from "react";
-import "./SearchResults.css";
-import TrackList from "../TrackList/TrackList";
+import "./searchResults.css";
+import TrackList from "../tracklist/Tracklist.jsx";
 
 class SearchResults extends React.Component {
  render() {

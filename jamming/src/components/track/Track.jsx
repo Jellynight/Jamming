@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import "./Track.css";
+import "./track.css";
 
 class Track extends React.Component {
  render() {

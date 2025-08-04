@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import "./Playlist.css";
+import "./playlist.css";
 class Playlist extends React.Component {
  render() {
   return (

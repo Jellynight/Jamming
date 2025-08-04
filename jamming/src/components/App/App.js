@@ -2,9 +2,9 @@
 
 import React from "react";
 import "./App.css";
-import SearchBar from "../SearchBar/SearchBar";
-import SearchResults from "../SearchResults/SearchResults";
-import Playlist from "../Playlist/Playlist";
+import SearchBar from "../searchbar/Searchbar.jsx";
+import SearchResults from "../searchResults/SearchResults.jsx";
+import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 
 class App extends React.Component {
