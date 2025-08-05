@@ -4,6 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const token =
  "BQDBKJ5eo5jxbtpWjVOj7ryS84khybFpP_lTqzV7uV-T_m0cTfwvdn5BnBSKPxKgEb11";
+
 const fetchWebApi = createAsyncThunk(
  "spotify/fetchWebApi",
  async (endpoint, method, body) => {
@@ -18,23 +19,20 @@ const fetchWebApi = createAsyncThunk(
  }
 );
 
-const getTopTracks = createAsyncThunk(
- "spotify/getTopTracks",
- async () => {
-  // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
-  return await fetchWebApi(
-   "v1/me/top/tracks?time_range=long_term&limit=5",
-   "GET"
-  ).items;
- }
-);
+const getTopTracks = createAsyncThunk("spotify/getTopTracks", async () => {
+ // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
+ return await fetchWebApi(
+  "v1/me/top/tracks?time_range=long_term&limit=5",
+  "GET"
+ ).items;
+});
 
-const topTracks = getTopTracks();
+/*const topTracks = getTopTracks();
 console.log(
  topTracks?.map(
   ({ name, artists }) =>
    `${name} by ${artists.map((artist) => artist.name).join(", ")}`
  )
-);
+);*/
 
-export { fetchWebApi, getTopTracks, topTracks };
+export { fetchWebApi, getTopTracks };

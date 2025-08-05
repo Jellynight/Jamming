@@ -1,12 +1,12 @@
 /** @format */
 
 import { configureStore } from "@reduxjs/toolkit";
-import spotifyReducer from "../Utils/CreateSlice";
+import spotifySliceReducer from "../Utils/CreateSlice";
 
 const store = configureStore({
  reducer: {
-  spotify: spotifyReducer,
- },
+  spotify: spotifySliceReducer,
+ }
 });
 
 export default store;

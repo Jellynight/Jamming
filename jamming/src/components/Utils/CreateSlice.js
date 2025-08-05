@@ -6,6 +6,7 @@ import { getTopTracks } from "./SpotifyApi";
 
 const initialState = {
  topTracks: [],
+ searchTerm: '',
  isLoading: false,
  hasError: false,
 };
@@ -18,15 +19,9 @@ const spotifySlice = createSlice({
  fetchWebApi,
  initialState: initialState,
  reducers: {
-  setTopTracks: (state, action) => {
-   state.topTracks = action.payload;
-  },
-  setLoading: (state, action) => {
-   state.isLoading = action.payload;
-  },
-  setError: (state, action) => {
-   state.hasError = action.payload;
-  },
+  setSearchTerm: (state, action) => {
+   state.searchTerm = action.payload;
+  }
  },
  extraReducers: (builder) => {
   builder
@@ -36,6 +31,7 @@ const spotifySlice = createSlice({
    })
    .addCase(getTopTracks.fulfilled, (state, action) => {
     state.isLoading = false;
+    state.hasError = false;
     state.topTracks = action.payload;
    })
    .addCase(getTopTracks.rejected, (state) => {
@@ -45,4 +41,6 @@ const spotifySlice = createSlice({
  },
 });
 
+
 export default spotifySlice.reducer;
+

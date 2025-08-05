@@ -7,6 +7,7 @@ import SearchResults from "../searchResults/SearchResults.jsx";
 import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 
+
 class App extends React.Component {
  render() {
   return (
