@@ -41,6 +41,8 @@ const spotifySlice = createSlice({
  },
 });
 
-
+export const { setSearchTerm } = spotifySlice.actions;
+export const selectTopTracks = (state) => state.spotify.topTracks;
+export const selectSearchTerm = (state) => state.spotify.searchTerm;
 export default spotifySlice.reducer;
 
