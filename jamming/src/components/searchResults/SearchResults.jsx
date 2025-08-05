@@ -11,27 +11,20 @@ const Results = () => {
   const dispatch = useDispatch();
   console.log(selectSearchTerm)
   const searchTerm = useSelector(selectSearchTerm);
-  const topTracks = useSelector(selectTopTracks);
   dispatch(getTopTracks(searchTerm));
-
-  return (
-    <div className="Results">
-      <h2>Results</h2>
-      <TrackList tracks={topTracks} />
-    </div>
-  );
+const topTracks = useSelector(selectTopTracks);
+  return topTracks
 };
 
-/*
 class SearchResults extends React.Component {
  render() {
   return (
    <div className="SearchResults">
-    <h2>Results</h2>
+    <Results />
     <TrackList />
    </div>
   );
  }
-}*/
+}
 
-export default Results;
+export default SearchResults;
