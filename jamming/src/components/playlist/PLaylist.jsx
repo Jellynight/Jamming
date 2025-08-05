@@ -2,12 +2,14 @@
 
 import React from "react";
 import "./playlist.css";
+import TrackList from "../tracklist/Tracklist.jsx";
+
 class Playlist extends React.Component {
  render() {
   return (
    <div className="Playlist">
     <input defaultValue="New Playlist" />
-    {/* <Tracklist /> */}
+    <TrackList />
     <button className="Playlist-save">SAVE TO SPOTIFY</button>
    </div>
   );

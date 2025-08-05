@@ -1,7 +1,6 @@
 /** @format */
 
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchWebApi } from "./SpotifyApi";
 import { getTopTracks } from "./SpotifyApi";
 
 const initialState = {
@@ -16,7 +15,6 @@ const spotifySlice = createSlice({
  // This function is used to encapsulate the logic for creating a Redux slice
  // It allows for easier management of state and actions related to Spotify API interactions
  name: "spotify",
- fetchWebApi,
  initialState: initialState,
  reducers: {
   setSearchTerm: (state, action) => {
