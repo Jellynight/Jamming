@@ -18,12 +18,16 @@ const fetchWebApi = createAsyncThunk(
  }
 );
 
-const getTopTracks = createAsyncThunk("spotify/getTopTracks", async (searchQuery) => {
- // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
- return await (
-   fetchWebApi("v1/me/top/tracks?time_range=long_term&limit=5", "GET")
- ).items;
-});
+const getTopTracks = createAsyncThunk(
+ "spotify/getTopTracks",
+ async () => {
+  // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
+  return await fetchWebApi(
+   "v1/me/top/tracks?time_range=long_term&limit=5",
+   "GET"
+  ).items;
+ }
+);
 
 const topTracks = getTopTracks();
 console.log(
