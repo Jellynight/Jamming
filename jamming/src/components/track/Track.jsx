@@ -4,18 +4,46 @@ import React from "react";
 import "./track.css";
 
 class Track extends React.Component {
+ constructor(props) {
+  super(props);
+  this.addTrack = this.addTrack.bind(this);
+ }
+ addTrack() {
+  // This method will call the onAdd prop passed down from the TrackList component
+  this.props.onAdd(this.props.track);
+ }
+ removeTrack() {
+  // This method will call the onRemove prop passed down from the TrackList component
+  this.props.onRemove(this.props.track);
+ }
+ renderAction() {
+  // This method will return either a "+" or "-" depending on the isRemoval prop
+  if (this.props.isRemoval) {
+   return (
+    <button className="Track-action" onClick={this.removeTrack}>
+     "-"
+    </button>
+   );
+  } else {
+   return (
+    <button className="Track-action" onClick={this.addTrack}>
+     "+
+    </button>
+   );
+  }
+ }
  render() {
-  const { track } = this.props;
+  //const { track } = this.props;
   return (
    <div className="Track">
     <div className="Track-information">
-     <h3>{track.name}</h3>
+     <h3>{ "Unknown Track"}</h3>
      <p>
-      {track.artist} | {track.album}
+      {"Unknown Artist"} | { "Unknown Album"}
      </p>
     </div>
-    <button className="Track-action">+</button>
-    <button className="Track-action">-</button>
+    {this.renderAction()}
+    {/* This button will render either a "+" or "-" based on the isRemoval prop */}
    </div>
   );
  }

@@ -2,8 +2,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 // Authorization token that must have been created previously. See : https://developer.spotify.com/documentation/web-api/concepts/authorization
 
-const token =
- [];
+const token = {};
 var client_id = '5365a44a42e344cfa3ef2ac6d3b5937a';
 var client_secret = 'e2b1f29afdcb440fb6279963458c3787';
 
@@ -32,10 +31,11 @@ const fetchWebApi = createAsyncThunk(
    headers: {
     Authorization: `Bearer ${token}`,
    },
-   method,
+   method: "POST",
    body: JSON.stringify(body),
   });
-  return await res.json();
+  await res.json();
+  return res;
  }
 );
 
