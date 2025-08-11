@@ -1,4 +1,5 @@
 import React from 'react';
+import Spotify from '../Utils/Spotify.js';
 
 class Profile extends React.Component {
       constructor(props) {
@@ -12,9 +13,29 @@ class Profile extends React.Component {
             imgUrl: ''
             };
             }
+getUserProfile = async () => {
+      try {
+            const profile = await Spotify.getUserProfile();
+            this.setState({
+                  displayName: profile.display_name,
+                  id: profile.id,
+                  email: profile.email,
+                  uri: profile.uri,
+                  url: profile.external_urls.spotify,
+                  imgUrl: profile.images[0].url
+            });
+      } catch (error) {
+            console.error("Error fetching user profile:", error);
+      }
+}
+
+componentDidMount() {
+            this.getUserProfile();
+      }
 render() {
       return(
       <div>
+      <button onClick={this.getUserProfile}>Refresh Profile</button>
       <h1>Display your Spotify profile data</h1>
       <section id="profile">
       <h2>Logged in as <span id="displayName">{this.state.displayName}</span></h2>

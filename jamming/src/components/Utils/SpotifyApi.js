@@ -31,7 +31,7 @@ const fetchWebApi = createAsyncThunk(
    headers: {
     Authorization: `Bearer ${token}`,
    },
-   method: "POST",
+   method,
    body: JSON.stringify(body),
   });
   await res.json();

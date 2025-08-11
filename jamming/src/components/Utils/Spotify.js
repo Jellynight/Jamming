@@ -8,20 +8,21 @@ const client_secret = "e2b1f29afdcb440fb6279963458c3787"; // Your Spotify client
 const url = "https://accounts.spotify.com/api/token";
 
 const Spotify = {
-   getAccessToken() {
+  async getAccessToken() {
   if (!token) {
    return token;
   } else if (!token) {
-   const res = fetch(`${url}`, {
+   const res = await fetch(`${url}`, {
     headers: {
      Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
      "Content-Type": "application/x-www-form-urlencoded",
     },
     method: "POST",
     body: "grant_type=client_credentials",
+    redirect_uri: redirect_uri,
     json: true,
    });
-      const data = res.json();
+      const data = await res.json();
       token = data.access_token;
       return data.access_token;
   }
@@ -43,11 +44,12 @@ const Spotify = {
   // Implementation for searching tracks
   console.log(token)
   return new Promise((res, rej) => {
-   const id = this.getUserId();
+   const accessToken = this.getAccessToken();
    fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
     headers: {
-     Authorization: `Bearer ${id}`,
+     Authorization: `Bearer ${accessToken}`,
     },
+    redirect_uri: redirect_uri
    }).then((response) => {
     if (response.ok) {
       response.json().then((data) => {
