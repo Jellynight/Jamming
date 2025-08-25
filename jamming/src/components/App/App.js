@@ -74,7 +74,6 @@ class App extends React.Component {
  }
  search(term) {
       // Call the Spotify API to search for tracks with the given term
-      console.log(term);
       Spotify.search(term).then((tracks) => {
        this.setState({ SearchResults: tracks });
       });

@@ -6,14 +6,19 @@ import Track from "../track/Track.jsx";
 
 class Tracklist extends React.Component {
  render() {
-  return (
+        const { tracks } = this.props;
+        console.log(tracks[0])
+  if (Array.isArray(tracks)) {
+    return <div>No tracks found</div>;
+  } else {
+      return (
    <div className="TrackList">
-    {this.props.tracks.map((track) => (
+    {this.tracks.map((track) => (
      <Track
       key={track.id}
       name={track.name}
-      artist={track.artist}
-      album={track.album}
+      artist={track.artist[0].name}
+      album={track.album.name}
       id={track.id}
       onAdd={this.props.onAdd}
       isRemove={this.props.isRemove}
@@ -22,7 +27,8 @@ class Tracklist extends React.Component {
     ))}
    </div>
   );
- }
+ }}
+  
 }
 
 export default Tracklist;

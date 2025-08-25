@@ -33,13 +33,13 @@ class Track extends React.Component {
   }
  }
  render() {
-  //const { track } = this.props;
+  
   return (
    <div className="Track">
     <div className="Track-information">
-     <h3>{ "Unknown Track"}</h3>
+     <h3>{ this.props.name }</h3>
      <p>
-      {"Unknown Artist"} | { "Unknown Album"}
+      {this.props.artist} | { this.props.album }
      </p>
     </div>
     {this.renderAction()}
