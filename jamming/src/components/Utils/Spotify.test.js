@@ -29,3 +29,7 @@ test("fetch tracks from spotify api", async () => {
  expect(dat).toEqual({ data: "mocked data" });
 });
 
+test("fetch user data", async () => {
+      const d = await Spotify.getUserId();
+      expect(d).toEqual({ data: 'mocked data'})
+})

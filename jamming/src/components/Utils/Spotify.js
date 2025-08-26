@@ -1,6 +1,7 @@
 /** @format */
 
 import { Buffer } from "buffer";
+
 let token = "";
 
 const url = "https://accounts.spotify.com";
@@ -30,16 +31,23 @@ const Spotify = {
  },
  async getUserId() {
   // Implementation for getting user ID
-  const accessToken = this.getAccessToken();
-  console.log(accessToken);
-  const response = await fetch("https://api.spotify.com/v1/me", {
-   headers: {
-    Authorization: `Bearer ${accessToken}`,
-   },
-  });
-  const data = await response.json();
-  console.log("User ID:", data);
-  return data.id;
+  //const accessToken = await this.getAccessToken();
+  const clientId = client_id;
+  const redirectUri = "http://localhost:3000";
+  const scopes = ["user-read-private", "user-read-email"];
+
+  const authUrl =
+   `https://accounts.spotify.com/authorize?` +
+   `client_id=${clientId}` +
+   `&response_type=code` +
+   `&redirect_uri=${redirectUri}` +
+   `&scope=${encodeURIComponent(scopes.join(" "))}`;
+
+  window.location.href = authUrl;
+  const hash = window.location.hash;
+  token = new URLSearchParams(hash.substring(1)).get("access_token");
+
+  return ;
  },
  async search(term) {
   // Implementation for searching tracks

@@ -7,6 +7,7 @@ import SearchResults from "../searchResults/SearchResults.jsx";
 import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 import Spotify from "../Utils/Spotify.js";
+import Profile from "../profile/profile.jsx";
 
 class App extends React.Component {
  constructor(props) {
@@ -63,20 +64,20 @@ class App extends React.Component {
  savePlaylist() {
   const trackURIs = this.state.playlistTracks.map((track) => track.uri);
   // Call the Spotify API to save the playlist with the given name and tracks
-      Spotify.savePlaylist(this.state.playlistName, trackURIs)
-       .then(() => {
-      this.setState({
-       playlistName: "New Playlist",
-       playlistTracks: [],
-      });
-       })
-       .catch((error) => console.error("Error saving playlist:", error));
+  Spotify.savePlaylist(this.state.playlistName, trackURIs)
+   .then(() => {
+    this.setState({
+     playlistName: "New Playlist",
+     playlistTracks: [],
+    });
+   })
+   .catch((error) => console.error("Error saving playlist:", error));
  }
  search(term) {
-      // Call the Spotify API to search for tracks with the given term
-      Spotify.search(term).then((tracks) => {
-       this.setState({ SearchResults: tracks });
-      });
+  // Call the Spotify API to search for tracks with the given term
+  Spotify.search(term).then((tracks) => {
+   this.setState({ SearchResults: tracks });
+  });
  }
  render() {
   return (
@@ -85,6 +86,7 @@ class App extends React.Component {
      Ja<span className="highlight">mmm</span>ing
     </h1>
     <div className="App">
+     <Profile />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">
       <SearchResults
