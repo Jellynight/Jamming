@@ -16,7 +16,7 @@ const Spotify = {
     method: "POST",
     headers: {
      Authorization: `Basic ${new Buffer.from(
-      client_id + `:` + client_secret
+      client_id 
      ).toString("base64")}`,
      "Content-Type": "application/x-www-form-urlencoded",
     },
