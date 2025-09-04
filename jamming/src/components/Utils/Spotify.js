@@ -32,21 +32,18 @@ const Spotify = {
   // Implementation for getting user ID
   //const accessToken = await this.getAccessToken();
   const clientId = client_id;
-  const scopes = ["user-read-private", "user-read-email"];
+  const scopes = ["user-read-private", "user-read-email", 'user-library-read'];
 // old redirect api: https://github.com/Jellynight/Jamming/jamming .git removed from spotify
-//new installed api: https://192.168.0.248:3000/callback
+//new installed api: http://192.168.0.248:3000/callback
   const authUrl =
    `https://accounts.spotify.com/authorize?` +
    `client_id=${clientId}` +
    `&response_type=code` +
-   `&redirect_uri=https://192.168.0.248:3000/callback` +
+   `&redirect_uri=http://127.0.0.1:3000/callback` +
    `&scope=${encodeURIComponent(scopes.join(" "))}`;
 
   window.location.href = authUrl;
-  const hash = window.location.hash;
-  token = new URLSearchParams(hash.substring(1)).get("access_token");
-
-  return ;
+  return;
  },
  async search(term) {
   // Implementation for searching tracks
