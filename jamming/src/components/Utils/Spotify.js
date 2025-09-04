@@ -6,7 +6,6 @@ let token = "";
 
 const url = "https://accounts.spotify.com";
 const client_id = "5365a44a42e344cfa3ef2ac6d3b5937a"; // Your Spotify client ID
-const client_secret = "e2b1f29afdcb440fb6279963458c3787"; // Your Spotify client secret
 
 const Spotify = {
  async getAccessToken() {
