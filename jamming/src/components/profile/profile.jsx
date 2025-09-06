@@ -7,21 +7,19 @@ class Profile extends React.Component {
  constructor(props) {
   super(props);
   this.state = {
-   displayName: localStorage.getItem("name") || "",
-   id: localStorage.getItem("user_id") || "",
+   displayName: localStorage.getItem("user_name") || "",
    email: localStorage.getItem("email") || "",
-   imgUrl: localStorage.getItem("img_url") || "",
   };
  }
  async getUserProfile() {
   const profile = await Spotify.getTokenThenId();
-      console.log(profile);
+  console.log(profile);
  }
 
  render() {
   return (
    <div>
-      <button onClick={this.getUserProfile.bind(this)}>Get Profile</button>
+    <button onClick={this.getUserProfile.bind(this)}>Get Profile</button>
     <section id="profile">
      <h2>
       <span id="displayName">{this.state.displayName}</span>
@@ -29,13 +27,7 @@ class Profile extends React.Component {
      <span id="avatar"></span>
      <ul>
       <li>
-       <span id="id">{this.state.id}</span>
-      </li>
-      <li>
        <span id="email">{this.state.email}</span>
-      </li>
-      <li>
-       <span id="imgUrl">{this.state.imgUrl}</span>
       </li>
      </ul>
     </section>

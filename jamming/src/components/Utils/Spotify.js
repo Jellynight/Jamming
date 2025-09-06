@@ -64,10 +64,9 @@ const Spotify = {
       userId
        .then((response) => response.json())
        .then((data) => {
-        localStorage.setItem("user_name", data.display_name);
-        localStorage.setItem("user_id", data.id);
+        
         localStorage.setItem("email", data.email);
-        localStorage.setItem("img_url", data.images[0]?.url);
+        localStorage.setItem("user_name", data.display_name);
        });
      });
    } catch (error) {
