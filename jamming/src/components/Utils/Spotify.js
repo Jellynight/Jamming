@@ -32,6 +32,7 @@ const Spotify = {
  },
  async getTokenThenId() {
   // Your Spotify client secret from environment variable
+  await this.requestAuthorization();
   const urlParams = document.location.search.split("code=")[1];
   console.log(urlParams);
   if (!urlParams) {
@@ -54,13 +55,20 @@ const Spotify = {
      .then((response) => response.json())
      .then((data) => {
       localStorage.setItem("access_token", data.access_token);
+      token = data.access_token;
       const userId = fetch("https://api.spotify.com/v1/me", {
        headers: {
         Authorization: "Bearer " + data.access_token,
        },
       });
-      const userIdData = userId;
-      return userIdData;
+      userId
+       .then((response) => response.json())
+       .then((data) => {
+        localStorage.setItem("user_name", data.display_name);
+        localStorage.setItem("user_id", data.id);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("img_url", data.images[0]?.url);
+       });
      });
    } catch (error) {
     console.log(error);
@@ -71,7 +79,7 @@ const Spotify = {
 
  async search(term) {
   // Implementation for searching tracks
-  console.log(token);
+
   const response = await fetch(
    `https://api.spotify.com/v1/search?q=${term}&type=track&market=ES&limit=20&offset=0`,
    {

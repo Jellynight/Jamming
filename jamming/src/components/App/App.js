@@ -8,7 +8,6 @@ import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 import Spotify from "../Utils/Spotify.js";
 import Profile from "../profile/Profile.jsx";
-import Login from '../profile/Login.jsx'
 
 class App extends React.Component {
  constructor(props) {
@@ -88,7 +87,6 @@ class App extends React.Component {
      Ja<span className="highlight">mmm</span>ing
     </h1>
     <div className="App">
-      <Login />
      <Profile />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">

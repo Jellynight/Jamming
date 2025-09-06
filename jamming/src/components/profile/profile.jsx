@@ -7,21 +7,21 @@ class Profile extends React.Component {
  constructor(props) {
   super(props);
   this.state = {
-   displayName: "",
-   id: "",
-   email: "",
-   imgUrl: "",
+   displayName: localStorage.getItem("name") || "",
+   id: localStorage.getItem("user_id") || "",
+   email: localStorage.getItem("email") || "",
+   imgUrl: localStorage.getItem("img_url") || "",
   };
  }
  async getUserProfile() {
-   const profile = await Spotify.getTokenThenId();
-   console.log(profile);
+  const profile = await Spotify.getTokenThenId();
+      console.log(profile);
  }
 
  render() {
   return (
    <div>
-      <button onClick={this.getUserProfile}>Get Profile</button>
+      <button onClick={this.getUserProfile.bind(this)}>Get Profile</button>
     <section id="profile">
      <h2>
       <span id="displayName">{this.state.displayName}</span>
