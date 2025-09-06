@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import Spotify from "./Spotify";
 
 // Mocking the Spotify API
-const fetchData = Spotify.getAccessToken();
+const fetchData = Spotify.requestAuthorization();
 
 global.fetch = jest.fn(() =>
  Promise.resolve({

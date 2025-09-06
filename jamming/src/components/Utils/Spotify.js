@@ -1,54 +1,78 @@
 /** @format */
-
-import { Buffer } from "buffer";
-
 let token = "";
-
-const url = "https://accounts.spotify.com";
-const client_id = "5365a44a42e344cfa3ef2ac6d3b5937a"; // Your Spotify client ID
+const redirect_uri = "http://127.0.0.1:3000/callback";
+const client_id = process.env.REACT_APP_CLIENT_ID;
+const client_secret = process.env.REACT_APP_CLIENT_SECRET;
 
 const Spotify = {
- async getAccessToken() {
-  if (token) {
-   return token;
-  } else if (!token) {
-   const res = await fetch(`${url}/api/token`, {
-    method: "POST",
-    headers: {
-     Authorization: `Basic ${new Buffer.from(
-      client_id 
-     ).toString("base64")}`,
-     "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: "grant_type=client_credentials",
-   });
+ async requestAuthorization() {
+  // sends api request to spotify to allow app access to user account
+  token = localStorage.getItem("access_token");
 
-   const data = await res.json();
-   token = data.access_token;
-   return data.access_token;
+  if (token) {
+   return;
+  } else if (!token) {
+   const scopes = ["user-read-private", "user-read-email", "user-library-read"];
+   try {
+    const authUrl =
+     `https://accounts.spotify.com/authorize?` +
+     `client_id=${client_id}` +
+     `&response_type=code` +
+     `&redirect_uri=${redirect_uri}` +
+     `&scope=${encodeURIComponent(scopes.join(" "))}`;
+
+    // Redirect to Spotify authorization
+    window.location.href = authUrl;
+
+    return;
+   } catch (error) {
+    console.log(error);
+   }
   }
  },
- async getUserId() {
-  // Implementation for getting user ID
-  //const accessToken = await this.getAccessToken();
-  const clientId = client_id;
-  const scopes = ["user-read-private", "user-read-email", 'user-library-read'];
-// old redirect api: https://github.com/Jellynight/Jamming/jamming .git removed from spotify
-//new installed api: http://192.168.0.248:3000/callback
-  const authUrl =
-   `https://accounts.spotify.com/authorize?` +
-   `client_id=${clientId}` +
-   `&response_type=code` +
-   `&redirect_uri=http://127.0.0.1:3000/callback` +
-   `&scope=${encodeURIComponent(scopes.join(" "))}`;
-
-  window.location.href = authUrl;
+ async getTokenThenId() {
+  // Your Spotify client secret from environment variable
+  const urlParams = document.location.search.split("code=")[1];
+  console.log(urlParams);
+  if (!urlParams) {
+   return console.log("no code found in document location");
+  } else if (urlParams) {
+   try {
+    fetch(`https://accounts.spotify.com/api/token`, {
+     method: "POST",
+     body: new URLSearchParams({
+      code: urlParams,
+      redirect_uri: redirect_uri,
+      grant_type: "authorization_code",
+     }),
+     headers: {
+      Authorization:
+       "Basic " + btoa(client_id + ":" + client_secret).toString("base64"),
+      "content-type": "application/x-www-form-urlencoded",
+     },
+    })
+     .then((response) => response.json())
+     .then((data) => {
+      localStorage.setItem("access_token", data.access_token);
+      const userId = fetch("https://api.spotify.com/v1/me", {
+       headers: {
+        Authorization: "Bearer " + data.access_token,
+       },
+      });
+      const userIdData = userId;
+      return userIdData;
+     });
+   } catch (error) {
+    console.log(error);
+   }
+  }
   return;
  },
+
  async search(term) {
   // Implementation for searching tracks
-  token = await this.getAccessToken();
-  const searched = await fetch(
+  console.log(token);
+  const response = await fetch(
    `https://api.spotify.com/v1/search?q=${term}&type=track&market=ES&limit=20&offset=0`,
    {
     method: "GET",
@@ -57,7 +81,7 @@ const Spotify = {
     },
    }
   );
-  const jsonData = await searched.json();
+  const jsonData = await response.json();
   return jsonData.tracks.items;
  },
 
@@ -67,11 +91,11 @@ const Spotify = {
    console.error("Playlist name or track URIs are missing");
    return;
   }
-  const accessToken = await this.getAccessToken();
+
   return await fetch("https://api.spotify.com/v1/me/playlists", {
    method: "POST",
    headers: {
-    Authorization: `Bearer ${accessToken}`,
+    Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
    },
    body: JSON.stringify({
@@ -85,7 +109,7 @@ const Spotify = {
     return fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
      method: "POST",
      headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
      },
      body: JSON.stringify({ uris: trackURIs }),

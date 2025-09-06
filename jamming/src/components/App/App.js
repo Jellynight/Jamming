@@ -7,7 +7,8 @@ import SearchResults from "../searchResults/SearchResults.jsx";
 import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 import Spotify from "../Utils/Spotify.js";
-import Profile from "../profile/profile.jsx";
+import Profile from "../profile/Profile.jsx";
+import Login from '../profile/Login.jsx'
 
 class App extends React.Component {
  constructor(props) {
@@ -79,6 +80,7 @@ class App extends React.Component {
    this.setState({ SearchResults: tracks });
   });
  }
+ 
  render() {
   return (
    <div>
@@ -86,6 +88,7 @@ class App extends React.Component {
      Ja<span className="highlight">mmm</span>ing
     </h1>
     <div className="App">
+      <Login />
      <Profile />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">
