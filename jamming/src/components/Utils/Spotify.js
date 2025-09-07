@@ -1,17 +1,20 @@
 /** @format */
-let token = "";
+
 const redirect_uri = "http://127.0.0.1:3000/callback";
 const client_id = process.env.REACT_APP_CLIENT_ID;
 const client_secret = process.env.REACT_APP_CLIENT_SECRET;
+const urlParams = localStorage.getItem("code");
+const token = localStorage.getItem("access_token");
 
 const Spotify = {
+
  async requestAuthorization() {
   // sends api request to spotify to allow app access to user account
-  token = localStorage.getItem("access_token");
-
-  if (token) {
+  if (urlParams === true) {
+      console.log("already have user authorized");
    return;
-  } else if (!token) {
+  } else if (urlParams === 'undefined') {
+console.log('node code authorized. requesting authorization');
    const scopes = ["user-read-private", "user-read-email", "user-library-read"];
    try {
     const authUrl =
@@ -23,7 +26,8 @@ const Spotify = {
 
     // Redirect to Spotify authorization
     window.location.href = authUrl;
-
+    const urlCode = document.location.search.split("code=")[1];
+    localStorage.setItem("code", urlCode);
     return;
    } catch (error) {
     console.log(error);
@@ -32,12 +36,11 @@ const Spotify = {
  },
  async getTokenThenId() {
   // Your Spotify client secret from environment variable
-  await this.requestAuthorization();
-  const urlParams = document.location.search.split("code=")[1];
-  console.log(urlParams);
-  if (!urlParams) {
-   return console.log("no code found in document location");
-  } else if (urlParams) {
+
+  if (token === true) {
+   console.log("already have token");
+   return;
+  } else if (token === 'undefined') {
    try {
     fetch(`https://accounts.spotify.com/api/token`, {
      method: "POST",
@@ -55,16 +58,15 @@ const Spotify = {
      .then((response) => response.json())
      .then((data) => {
       localStorage.setItem("access_token", data.access_token);
-      token = data.access_token;
+
       const userId = fetch("https://api.spotify.com/v1/me", {
        headers: {
-        Authorization: "Bearer " + data.access_token,
+        Authorization: "Bearer " + localStorage.getItem("access_token"),
        },
       });
       userId
        .then((response) => response.json())
        .then((data) => {
-        
         localStorage.setItem("email", data.email);
         localStorage.setItem("user_name", data.display_name);
        });
@@ -84,12 +86,12 @@ const Spotify = {
    {
     method: "GET",
     headers: {
-     Authorization: `Bearer ${token}`,
+     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     },
    }
   );
   const jsonData = await response.json();
-  return jsonData.tracks.items;
+  return jsonData;
  },
 
  async savePlaylist(name, trackURIs) {

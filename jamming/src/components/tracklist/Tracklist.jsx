@@ -5,18 +5,19 @@ import "./tracklist.css";
 import Track from "../track/Track.jsx";
 
 class Tracklist extends React.Component {
+      
  render() {
-  const { tracks } = this.props;
-  if (Array.isArray(tracks)) {
+      console.log(this.props.tracks);
+  if (this.props.tracks.length < 0) {
    return <div>No tracks found</div>;
   } else {
    return (
     <div className="TrackList">
-     {this.tracks.map((track) => (
+     {this.props.tracks.map((track) => (
       <Track
        key={track.id}
        name={track.name}
-       artist={track.artist[0].name}
+       artist={track.artists}
        album={track.album.name}
        id={track.id}
        URI={track.uri}

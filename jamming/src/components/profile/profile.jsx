@@ -11,18 +11,24 @@ class Profile extends React.Component {
    email: localStorage.getItem("email") || "",
   };
  }
- async getUserProfile() {
-  const profile = await Spotify.getTokenThenId();
-  console.log(profile);
+ getUserProfile() {
+  Spotify.getTokenThenId();
+ }
+ 
+ componentDidMount() {
+      try {
+            Spotify.requestAuthorization().then(Spotify.getTokenThenId());
+      } catch (error) {
+            console.log(error);
+      }
  }
 
  render() {
   return (
    <div>
-    <button onClick={this.getUserProfile.bind(this)}>Get Profile</button>
     <section id="profile">
      <h2>
-      <span id="displayName">{this.state.displayName}</span>
+      <span id="displayName">Welcome {this.state.displayName}</span>
      </h2>
      <span id="avatar"></span>
      <ul>
