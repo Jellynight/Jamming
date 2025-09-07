@@ -13,14 +13,7 @@ class App extends React.Component {
  constructor(props) {
   super(props);
   this.state = {
-   SearchResults: [
-    {
-     name: "Track Name",
-     artist: "Artist Name",
-     album: "Album Name",
-     id: "1",
-    },
-   ],
+   searchResults: [],
    playlistName: "New Playlist",
    playlistTracks: [
     {
@@ -73,13 +66,14 @@ class App extends React.Component {
    })
    .catch((error) => console.error("Error saving playlist:", error));
  }
- search(term) {
+
+ async search(term) {
   // Call the Spotify API to search for tracks with the given term
-  Spotify.search(term).then((tracks) => {
-   this.setState({ SearchResults: tracks });
-  });
+  const response = await Spotify.search(term);
+  this.state.searchResults.push(response.tracks)
+  console.log(this.state.searchResults)
  }
- 
+
  render() {
   return (
    <div>
@@ -91,7 +85,7 @@ class App extends React.Component {
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">
       <SearchResults
-       SearchResults={this.state.SearchResults}
+       trackArray={this.state.searchResults}
        onAdd={this.addTrack}
       />
       <Playlist
