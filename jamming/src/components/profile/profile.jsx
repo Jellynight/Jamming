@@ -1,7 +1,7 @@
 /** @format */
-
 import React from "react";
-import Spotify from "../Utils/Spotify.js";
+import Spotify, { fetchTokin } from "../Utils/Spotify.js";
+import { fetchApiCode, fetchUser } from "../Utils/Spotify.js";
 
 class Profile extends React.Component {
  constructor(props) {
@@ -11,25 +11,21 @@ class Profile extends React.Component {
    email: localStorage.getItem("email") || "",
   };
  }
+
  getUserProfile() {
   Spotify.getTokenThenId();
  }
- 
- componentDidMount() {
-      try {
-            if(localStorage.getItem('code')){
 
-                  
-            } else {
-              Spotify.requestAuthorization();    
-            }
-            Spotify.getTokenThenId();
-            if (!localStorage.getItem('expires_in') ==='undefined') {
-                  Spotify.refreshToken();
-            };
-      } catch (error) {
-            console.log(error);
-      }
+ componentDidMount() {
+  if (localStorage.getItem("code") === null) {
+   fetchApiCode();
+  }
+  if (localStorage.getItem("code") === String) {
+   fetchTokin();
+  }
+  if (localStorage.getItem("access_token") === String) {
+   fetchUser();
+  }
  }
 
  render() {
