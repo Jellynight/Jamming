@@ -1,51 +1,50 @@
 /** @format */
 
 const redirect_uri = "http://127.0.0.1:3000/callback";
+const url = "https://accounts.spotify.com/api/token";
 const client_id = process.env.REACT_APP_CLIENT_ID;
 const client_secret = process.env.REACT_APP_CLIENT_SECRET;
-const urlParams = localStorage.getItem("code");
-const token = localStorage.getItem("access_token");
+const code = localStorage.getItem("code") || "undefined";
+const token = localStorage.getItem("access_token") || "undefined";
+const refreshToken = localStorage.getItem("refresh_token") || "undefined";
 
 const Spotify = {
-
  async requestAuthorization() {
   // sends api request to spotify to allow app access to user account
-  if (urlParams === true) {
-      console.log("already have user authorized");
-   return;
-  } else if (urlParams === 'undefined') {
-console.log('node code authorized. requesting authorization');
-   const scopes = ["user-read-private", "user-read-email", "user-library-read"];
-   try {
-    const authUrl =
-     `https://accounts.spotify.com/authorize?` +
-     `client_id=${client_id}` +
-     `&response_type=code` +
-     `&redirect_uri=${redirect_uri}` +
-     `&scope=${encodeURIComponent(scopes.join(" "))}`;
 
-    // Redirect to Spotify authorization
-    window.location.href = authUrl;
-    const urlCode = document.location.search.split("code=")[1];
-    localStorage.setItem("code", urlCode);
-    return;
-   } catch (error) {
-    console.log(error);
-   }
+  console.log("requesting authorization");
+  const scopes = ["user-read-private", "user-read-email", "user-library-read"];
+  try {
+   const authUrl =
+    `https://accounts.spotify.com/authorize?` +
+    `client_id=${client_id}` +
+    `&response_type=code` +
+    `&redirect_uri=${redirect_uri}` +
+    `&scope=${encodeURIComponent(scopes.join(" "))}`;
+
+   // Redirect to Spotify authorization
+   window.location.href = authUrl;
+   const code = document.location.search.split("code=")[1];
+   localStorage.setItem("code", code);
+   return;
+  } catch (error) {
+   console.log(error);
   }
  },
  async getTokenThenId() {
   // Your Spotify client secret from environment variable
+ 
 
-  if (token === true) {
+  if (localStorage.getItem("access_token") === true) {
    console.log("already have token");
    return;
-  } else if (token === 'undefined') {
+  } else if (token === "undefined") {
+   console.log(token);
    try {
     fetch(`https://accounts.spotify.com/api/token`, {
      method: "POST",
      body: new URLSearchParams({
-      code: urlParams,
+      code: localStorage.getItem("code"),
       redirect_uri: redirect_uri,
       grant_type: "authorization_code",
      }),
@@ -57,25 +56,53 @@ console.log('node code authorized. requesting authorization');
     })
      .then((response) => response.json())
      .then((data) => {
+      console.log(data);
       localStorage.setItem("access_token", data.access_token);
-
-      const userId = fetch("https://api.spotify.com/v1/me", {
+      localStorage.setItem("refresh_token", data.refresh_token);
+      localStorage.setItem("expires_in", data.expires_in);
+     })
+     .then(() => {
+      if (localStorage.getItem("username") === true) {
+       return;
+      }
+      fetch("https://api.spotify.com/v1/me", {
        headers: {
         Authorization: "Bearer " + localStorage.getItem("access_token"),
        },
-      });
-      userId
-       .then((response) => response.json())
-       .then((data) => {
-        localStorage.setItem("email", data.email);
-        localStorage.setItem("user_name", data.display_name);
+      })
+       .then((userData) => userData.json())
+       .then((res) => {
+        localStorage.setItem("email", res.email);
+        localStorage.setItem("user_name", res.display_name);
        });
      });
    } catch (error) {
     console.log(error);
    }
+   return;
   }
-  return;
+ },
+ async refreshToken() {
+  const res = await fetch(url, {
+   method: "POST",
+   headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    Authorization:
+     "Basic " + btoa(client_id + ":" + client_secret).toString("base64"),
+   },
+   body: new URLSearchParams({
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+    client_id: client_id,
+   }),
+   json: true,
+  });
+  const response = await res.json();
+  console.log(response);
+  localStorage.setItem("access_token", response.access_token);
+  if (response.refresh_token) {
+   localStorage.setItem("refresh_token", response.refresh_token);
+  }
  },
 
  async search(term) {

@@ -70,8 +70,7 @@ class App extends React.Component {
  async search(term) {
   // Call the Spotify API to search for tracks with the given term
   const response = await Spotify.search(term);
-  this.state.searchResults.push(response.tracks)
-  console.log(this.state.searchResults)
+  this.state.searchResults.push(response.tracks.items);
  }
 
  render() {

@@ -7,8 +7,8 @@ import Track from "../track/Track.jsx";
 class Tracklist extends React.Component {
       
  render() {
-      console.log(this.props.tracks);
-  if (this.props.tracks.length < 0) {
+      
+  if (this.props.tracks == null) {
    return <div>No tracks found</div>;
   } else {
    return (
