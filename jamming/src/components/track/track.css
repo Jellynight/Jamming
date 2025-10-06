@@ -1,7 +1,8 @@
 .Track {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(256, 256, 256, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  min-height: min-content;
 }
 
 .Track-action {
@@ -33,5 +34,5 @@
 .Track-information p {
   font-size: .83rem;
   font-weight: 300;
-  color: rgba(256, 256, 256, 0.8);
+ color: rgba(255, 255, 255, 0.8);
 }

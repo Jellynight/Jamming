@@ -10,13 +10,15 @@ class SearchResults extends React.Component {
      The tracks prop is passed down to the TrackList component */
 
  render() {
-  //  console.log(this.props.trackArray)
+      const tracks = this.props.trackArray;
+  const flattenedTracks = Array.isArray(tracks[0]) ? tracks[0] : tracks;
+  console.log(flattenedTracks);
   return (
    <div className="SearchResults">
     <h2>Results</h2>
 
     <TrackList
-     tracks={this.props.trackArray}
+     tracks={flattenedTracks}
      onAdd={this.props.onAdd}
      isRemoval={false}
     />

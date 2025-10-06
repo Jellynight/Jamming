@@ -7,6 +7,7 @@ class Track extends React.Component {
  constructor(props) {
   super(props);
   this.addTrack = this.addTrack.bind(this);
+  this.removeTrack = this.removeTrack.bind(this);
  }
  addTrack() {
   // This method will call the onAdd prop passed down from the TrackList component
@@ -27,11 +28,12 @@ class Track extends React.Component {
   } else {
    return (
     <button className="Track-action" onClick={this.addTrack}>
-     "+
+     "+"
     </button>
    );
   }
  }
+
  render() {
   
   return (
@@ -39,11 +41,10 @@ class Track extends React.Component {
     <div className="Track-information">
      <h3>{ this.props.name }</h3>
      <p>
-      {this.props.artist} | { this.props.album }
+      {this.props.artist} | {this.props.album}
      </p>
-    </div>
     {this.renderAction()}
-    {/* This button will render either a "+" or "-" based on the isRemoval prop */}
+   </div>
    </div>
   );
  }

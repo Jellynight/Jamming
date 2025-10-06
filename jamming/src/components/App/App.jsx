@@ -14,17 +14,9 @@ class App extends React.Component {
   super(props);
   this.state = {
    searchResults: [],
-   playlistName: "New Playlist",
-   playlistTracks: [
-    {
-     name: "Track Name",
-     artist: "Artist Name",
-     album: "Album Name",
-     id: "1",
-    },
-   ],
-  };
-  this.searchTerm = "";
+   playlistName: "",
+   playlistTracks: [],
+  }
   this.updatePlaylistName = this.updatePlaylistName.bind(this);
   this.savePlaylist = this.savePlaylist.bind(this);
   this.addTrack = this.addTrack.bind(this);
@@ -70,9 +62,14 @@ class App extends React.Component {
  async search(term) {
   // Call the Spotify API to search for tracks with the given term
   const response = await Spotify.search(term);
-  this.state.searchResults.push(response.tracks.items);
+      this.setState({ searchResults: response.tracks.items });
  }
-
+ componentDidMount() {
+      const code = localStorage.getItem("code");
+      if (code === null || code === undefined || code === "null" || code === "" || code.length < 10) {
+            Spotify.fetchApiCode();
+      }
+}
 
  render() {
   return (
@@ -87,6 +84,7 @@ class App extends React.Component {
       <SearchResults
        trackArray={this.state.searchResults}
        onAdd={this.addTrack}
+       onRemove={false} 
       />
       <Playlist
        Playlist={this.state.playlistName}
