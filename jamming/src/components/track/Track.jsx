@@ -11,11 +11,11 @@ class Track extends React.Component {
  }
  addTrack() {
   // This method will call the onAdd prop passed down from the TrackList component
-  this.props.onAdd(this.props.track);
+  this.props.onAdd(this.props.id);
  }
  removeTrack() {
   // This method will call the onRemove prop passed down from the TrackList component
-  this.props.onRemove(this.props.track);
+  this.props.onRemove(this.props.id);
  }
  renderAction() {
   // This method will return either a "+" or "-" depending on the isRemoval prop

@@ -12,7 +12,7 @@ class SearchResults extends React.Component {
  render() {
       const tracks = this.props.trackArray;
   const flattenedTracks = Array.isArray(tracks[0]) ? tracks[0] : tracks;
-  console.log(flattenedTracks);
+  
   return (
    <div className="SearchResults">
     <h2>Results</h2>

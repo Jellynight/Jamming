@@ -23,17 +23,24 @@ class App extends React.Component {
   this.removeTrack = this.removeTrack.bind(this);
   this.search = this.search.bind(this);
  }
- addTrack(track) {
-  if (
-   this.state.playlistTracks.find((savedTrack) => savedTrack.id === track.id)
+ addTrack(trackId) {
+      console.log(trackId);
+      const track = this.state.searchResults.find(t => t.id === trackId);
+      if (!trackId) {
+            console.error("Invalid track object:", trackId);
+            return;
+      } else if (
+   this.state.playlistTracks.find((savedTrack) => savedTrack.id === trackId)
   ) {
+      console.log("track already in playlist");
    return;
   } else {
    // Add the track to the playlist
-
+console.log("adding track to playlist", trackId);
    this.setState({
     playlistTracks: [...this.state.playlistTracks, track],
    });
+   console.log(this.state.playlistTracks);
   }
  }
  removeTrack(track) {
