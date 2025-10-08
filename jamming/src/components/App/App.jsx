@@ -8,6 +8,7 @@ import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 import Profile from "../profile/Profile.jsx";
 import Spotify from "../Utils/Spotify.js";
+import Callback from "../Utils/Callback.jsx";
 
 class App extends React.Component {
  constructor(props) {
@@ -16,7 +17,13 @@ class App extends React.Component {
    searchResults: [],
    playlistName: "",
    playlistTracks: [],
-  }
+   user: {
+    name: "",
+    email: "",
+    id: "",
+    login: false,
+   },
+  };
   this.updatePlaylistName = this.updatePlaylistName.bind(this);
   this.savePlaylist = this.savePlaylist.bind(this);
   this.addTrack = this.addTrack.bind(this);
@@ -24,19 +31,19 @@ class App extends React.Component {
   this.search = this.search.bind(this);
  }
  addTrack(trackId) {
-      console.log(trackId);
-      const track = this.state.searchResults.find(t => t.id === trackId);
-      if (!trackId) {
-            console.error("Invalid track object:", trackId);
-            return;
-      } else if (
+  console.log(trackId);
+  const track = this.state.searchResults.find((t) => t.id === trackId);
+  if (!trackId) {
+   console.error("Invalid track object:", trackId);
+   return;
+  } else if (
    this.state.playlistTracks.find((savedTrack) => savedTrack.id === trackId)
   ) {
-      console.log("track already in playlist");
+   console.log("track already in playlist");
    return;
   } else {
    // Add the track to the playlist
-console.log("adding track to playlist", trackId);
+   console.log("adding track to playlist", trackId);
    this.setState({
     playlistTracks: [...this.state.playlistTracks, track],
    });
@@ -69,14 +76,30 @@ console.log("adding track to playlist", trackId);
  async search(term) {
   // Call the Spotify API to search for tracks with the given term
   const response = await Spotify.search(term);
-      this.setState({ searchResults: response.tracks.items });
+  this.setState({ searchResults: response.tracks.items });
  }
- componentDidMount() {
-      const code = localStorage.getItem("code");
-      if (code === null || code === undefined || code === "null" || code === "" || code.length < 10) {
-            Spotify.fetchApiCode();
-      }
-}
+
+async componentDidMount() {
+  const path = window.location.pathname;
+  const code = new URLSearchParams(window.location.search).get("code");
+
+  if (path === "/callback" && code) {
+   // Optional: restore login state from sessionStorage
+   
+   const displayName = await sessionStorage.getItem("user_name");
+   const email = await sessionStorage.getItem("email")
+   .then(() => {
+      this.setState({
+    user: {
+     name: displayName,
+     email: email,
+     login: true,
+    },
+   });
+   })
+   
+  }
+ }
 
  render() {
   return (
@@ -85,13 +108,14 @@ console.log("adding track to playlist", trackId);
      Ja<span className="highlight">mmm</span>ing
     </h1>
     <div className="App">
-     <Profile />
+     <Profile user={this.state.user} />
+     <Callback />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">
       <SearchResults
        trackArray={this.state.searchResults}
        onAdd={this.addTrack}
-       onRemove={false} 
+       onRemove={false}
       />
       <Playlist
        Playlist={this.state.playlistName}

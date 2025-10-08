@@ -7,33 +7,33 @@ const url = "https://accounts.spotify.com/api/token";
 const client_id = process.env.REACT_APP_CLIENT_ID;
 
 let token = "";
-const refreshToken = localStorage.getItem("refresh_token");
+const refreshToken = sessionStorage.getItem("refresh_token");
 const urlParams = new URLSearchParams(window.location.search);
 const code = urlParams.get("code");
-localStorage.setItem("code", code);
+sessionStorage.setItem("code", code);
 const currentToken = {
  get access_token() {
-  return localStorage.getItem("access_token") || null;
+  return sessionStorage.getItem("access_token") || null;
  },
  get refresh_token() {
-  return localStorage.getItem("refresh_token") || null;
+  return sessionStorage.getItem("refresh_token") || null;
  },
  get expires_in() {
-  return localStorage.getItem("refresh_in") || null;
+  return sessionStorage.getItem("expires_in") || null;
  },
  get expires() {
-  return localStorage.getItem("expires") || null;
+  return sessionStorage.getItem("expires") || null;
  },
 
  save: function (response) {
   const { access_token, refresh_token, expires_in } = response;
-  localStorage.setItem("access_token", access_token);
-  localStorage.setItem("refresh_token", refresh_token);
-  localStorage.setItem("expires_in", expires_in);
+  sessionStorage.setItem("access_token", access_token);
+  sessionStorage.setItem("refresh_token", refresh_token);
+  sessionStorage.setItem("expires_in", expires_in);
 
   const now = new Date();
   const expiry = new Date(now.getTime() + expires_in * 1000);
-  localStorage.setItem("expires", expiry);
+  sessionStorage.setItem("expires", expiry);
  },
 };
 
@@ -47,7 +47,7 @@ async fetchApiCode() {
 const codeVerifier = generateRandomString(64);
 const hashed = await sha256(codeVerifier);
 const codeChallenge = base64encode(hashed);
-localStorage.setItem("code_verifier", codeVerifier);
+sessionStorage.setItem("code_verifier", codeVerifier);
 
  try {
   const authUrl =
@@ -69,7 +69,7 @@ localStorage.setItem("code_verifier", codeVerifier);
 async fetchToken () {
  const urlParams = new URLSearchParams(window.location.search);
  const code = urlParams.get("code");
- const codeVerifier = localStorage.getItem("code_verifier");
+ const codeVerifier = sessionStorage.getItem("code_verifier");
  if (code && codeVerifier) {
   console.log("Fetching token...");
   try {
@@ -87,9 +87,9 @@ async fetchToken () {
     }),
    });
    const data = await res.json();
-   localStorage.setItem("access_token", data.access_token);
-   localStorage.setItem("refresh_token", data.refresh_token);
-   localStorage.setItem("expires_in", data.expires_in);
+   sessionStorage.setItem("access_token", data.access_token);
+   sessionStorage.setItem("refresh_token", data.refresh_token);
+   sessionStorage.setItem("expires_in", data.expires_in);
    currentToken.save(data);
    const url = new URL(window.location.href);
    url.searchParams.delete("code");
@@ -100,20 +100,20 @@ async fetchToken () {
    console.log("error fetching token", error);
   }
  } else {
-      console.log("Missing code or code verifier");
+      console.log("Missing code or code verifier", '\n','code:', code, '\n', 'codeVerifier:', codeVerifier);
  }
 },
 async fetchUser  () {
  try {
   await fetch("https://api.spotify.com/v1/me", {
    headers: {
-    Authorization: "Bearer " + localStorage.getItem("access_token"),
+    Authorization: "Bearer " + sessionStorage.getItem("access_token"),
    },
   })
    .then((userData) => userData.json())
    .then((res) => {
-    localStorage.setItem("email", res.email);
-    localStorage.setItem("user_name", res.display_name);
+    sessionStorage.setItem("email", res.email);
+    sessionStorage.setItem("user_name", res.display_name);
    });
  } catch (error) {
   console.log(error);
