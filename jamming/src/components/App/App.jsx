@@ -31,7 +31,7 @@ class App extends React.Component {
   this.search = this.search.bind(this);
  }
  addTrack(trackId) {
-  console.log(trackId);
+  
   const track = this.state.searchResults.find((t) => t.id === trackId);
   if (!trackId) {
    console.error("Invalid track object:", trackId);
@@ -61,6 +61,7 @@ class App extends React.Component {
   this.setState({ playlistName: name });
  }
  savePlaylist() {
+      console.log(this.state.playlistName);
   const trackURIs = this.state.playlistTracks.map((track) => track.uri);
   // Call the Spotify API to save the playlist with the given name and tracks
   Spotify.savePlaylist(this.state.playlistName, trackURIs)
@@ -82,23 +83,40 @@ class App extends React.Component {
 async componentDidMount() {
   const path = window.location.pathname;
   const code = new URLSearchParams(window.location.search).get("code");
+const token = sessionStorage.getItem("access_token");
 
-  if (path === "/callback" && code) {
+
+  setTimeout(async () => {
+  if (path === "/callback" && code && token) {
    // Optional: restore login state from sessionStorage
-   
+   console.log("setting user state")
    const displayName = await sessionStorage.getItem("user_name");
-   const email = await sessionStorage.getItem("email")
-   .then(() => {
-      this.setState({
+   const email = await sessionStorage.getItem("email");
+   this.setState({
     user: {
      name: displayName,
      email: email,
      login: true,
     },
    });
-   })
-   
   }
+ }, 1000);
+}
+async login() {
+   console.log(this.state);   
+  try {
+   await Spotify.fetchApiCode(); // Redirect happens here
+   
+  } catch (error) {
+   console.error("loginfailed", error);
+   this.setState({ user: { login: false } });
+  }
+ }
+
+logout() {
+  sessionStorage.clear();
+  window.location.href = "https://accounts.spotify.com/en/logout";
+  window.location.reload();
  }
 
  render() {
@@ -108,7 +126,7 @@ async componentDidMount() {
      Ja<span className="highlight">mmm</span>ing
     </h1>
     <div className="App">
-     <Profile user={this.state.user} />
+     <Profile user={this.state.user} login={this.login} logout={this.logout} />
      <Callback />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">

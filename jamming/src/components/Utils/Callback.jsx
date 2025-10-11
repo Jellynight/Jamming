@@ -5,7 +5,7 @@ import Spotify from "./Spotify"; // adjust path as needed
 
 export default function Callback() {
  const hasRun = useRef(false);
- 
+
  useEffect(() => {
   if (hasRun.current) return;
   hasRun.current = true;
@@ -20,6 +20,7 @@ export default function Callback() {
    try {
     await Spotify.fetchToken();
     await Spotify.fetchUser();
+    sessionStorage.setItem("login", true);
    } catch (error) {
     console.error("Login failed:", error);
    }

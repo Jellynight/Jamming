@@ -6,7 +6,6 @@ const redirect_uri = "http://127.0.0.1:3000/callback";
 const url = "https://accounts.spotify.com/api/token";
 const client_id = process.env.REACT_APP_CLIENT_ID;
 
-let token = "";
 const refreshToken = sessionStorage.getItem("refresh_token");
 const urlParams = new URLSearchParams(window.location.search);
 const code = urlParams.get("code");
@@ -42,7 +41,7 @@ const Spotify = {
 
 async fetchApiCode() {
       console.log("Fetching API code...");
- const scope = ["user-read-private", "user-read-email"];
+ const scope = ["user-read-private", "user-read-email", "playlist-modify-public", "playlist-modify-private", "playlist-read-private"];
  
 const codeVerifier = generateRandomString(64);
 const hashed = await sha256(codeVerifier);
@@ -149,7 +148,7 @@ async fetchUser  () {
    {
     method: "GET",
     headers: {
-     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+     Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
     },
    }
   );
@@ -160,14 +159,14 @@ async fetchUser  () {
  async savePlaylist(name, trackURIs) {
   // Implementation for saving playlist
   if (!name || !trackURIs.length) {
-   console.error("Playlist name or track URIs are missing");
+   console.error("Playlist name or track URIs are missing", name, trackURIs);
    return;
   }
 
   return await fetch("https://api.spotify.com/v1/me/playlists", {
    method: "POST",
    headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
     "Content-Type": "application/json",
    },
    body: JSON.stringify({
@@ -181,7 +180,7 @@ async fetchUser  () {
     return fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
      method: "POST",
      headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
       "Content-Type": "application/json",
      },
      body: JSON.stringify({ uris: trackURIs }),
@@ -189,6 +188,15 @@ async fetchUser  () {
    })
    .catch((error) => console.error("Error saving playlist:", error));
  },
+ getUserPlaylists() {
+      fetch("https://api.spotify.com/v1/me/playlists", {
+         method: "GET",
+         headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+             "Content-Type": "application/json",
+         }   
+      })
+ }
 };
 
 export default Spotify;

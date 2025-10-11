@@ -1,25 +1,18 @@
 /** @format */
 import React from "react";
-import Spotify from "../Utils/Spotify";
 
 class Profile extends React.Component {
- 
- async login() {
-  try {
-   await Spotify.fetchApiCode(); // Redirect happens here
-  } catch (error) {
-   console.error("loginfailed", error);
-   this.props.login.setState({ login: false });
-  }
+      constructor(props) {
+      super(props);
+      this.login = this.login.bind(this);
+      this.logout = this.logout.bind(this);
  }
-
+ login (){
+      this.props.login();
+ }
  logout() {
-  this.props.login.setState({ login: false });
-  sessionStorage.clear();
-  window.location.href = "https://accounts.spotify.com/en/logout";
-  window.location.reload();
+      this.props.logout();
  }
-
  render() {
   console.log("Profile state:", this.props);
   if (this.props.user.login) {
@@ -38,7 +31,7 @@ class Profile extends React.Component {
         <span id="email">{this.props.user.email}</span>
        </li>
       </ul>
-      <button className="logout" onClick={this.logout.bind(this)}>
+      <button className="logout" onClick={this.logout}>
        Logout
       </button>
      </section>
@@ -47,7 +40,7 @@ class Profile extends React.Component {
   } else {
    return (
     <div>
-     <button className="login" onClick={this.login.bind(this)}>
+     <button className="login" onClick={this.login}>
       Welcome Login
      </button>
     </div>
