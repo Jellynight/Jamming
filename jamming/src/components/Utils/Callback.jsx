@@ -29,9 +29,5 @@ export default function Callback() {
   completeLogin();
  }, []);
 
- return (
-  <div>
-   <h2>Welcome back!</h2>
-  </div>
- );
+ return null;
 }

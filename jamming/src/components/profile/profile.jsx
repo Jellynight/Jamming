@@ -22,10 +22,6 @@ class Profile extends React.Component {
       <h2>
        <span id="displayName">Welcome {this.props.user.name}</span>
       </h2>
-      <br />
-      <br />
-      {/* <img id="avatar" src="" alt="Profile Avatar" /> */}
-      <span id="avatar"></span>
       <ul>
        <li>
         <span id="email">{this.props.user.email}</span>
