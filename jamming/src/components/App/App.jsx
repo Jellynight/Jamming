@@ -8,7 +8,7 @@ import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 import Profile from "../profile/Profile.jsx";
 import Spotify from "../Utils/Spotify.js";
-import Callback from "../Utils/Callback.jsx";
+
 import UserPlaylist from "../playlist/UserPlaylist/UserPlaylist.jsx";
 
 class App extends React.Component {
@@ -95,10 +95,10 @@ class App extends React.Component {
 
  async getSavedPlaylists() {
   const data = await Spotify.getUserPlaylists();
-  console.log(data.items);
+
   this.setState({ savedPlaylists: data.items });
  }
-
+ /*
  componentDidMount() {
   // On component mount, check if redirected from Spotify auth with code and token
   const path = window.location.pathname;
@@ -122,12 +122,24 @@ class App extends React.Component {
     });
    }
   }, 1000);
- }
+ }*/
  async login() {
   // Initiate Spotify login flow redirecting to Spotify auth page using PKCE auth flow
 
   try {
-   await Spotify.fetchApiCode(); // Redirect happens here
+      // Redirect happens here once login triggered
+   await Spotify.fetchApiCode()
+    .then(async () => {
+     const urlParams = new URLSearchParams(window.location.search);
+     const code = urlParams.get("code");
+     sessionStorage.setItem("code", code);
+     const url = new URL(window.location.href);
+     url.searchParams.delete("code");
+     const updatedUrl = url.search ? url.href : url.href.replace("?", "");
+     window.history.replaceState({}, document.title, updatedUrl);
+    })
+    .then(() => Spotify.fetchToken())
+    .then(() => Spotify.fetchUser());
   } catch (error) {
    console.error("loginfailed", error);
    //logout on error
@@ -150,7 +162,6 @@ class App extends React.Component {
     </h1>
     <div className="App">
      <Profile user={this.state.user} login={this.login} logout={this.logout} />
-     <Callback />
      <UserPlaylist
       savedPlaylists={this.state.savedPlaylists}
       getSavedPlaylists={this.getSavedPlaylists}
