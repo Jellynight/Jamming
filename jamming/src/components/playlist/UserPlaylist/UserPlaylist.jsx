@@ -2,6 +2,7 @@
 
 import React from "react";
 import Tracklist from "../../tracklist/Tracklist";
+
 class UserPlaylist extends React.Component {
  constructor(props) {
   super(props);
@@ -15,17 +16,14 @@ class UserPlaylist extends React.Component {
    (playlist) => playlist.id === id
   );
   console.log(pickedPlaylist);
-  const fetchedPlaylist = fetch(pickedPlaylist.tracks.href, {
-      
-  })
+  //const fetchedPlaylist = fetch(pickedPlaylist.tracks.href, {})
  }
 
  render() {
   const array = this.props.savedPlaylists;
 
   const playlistArray = Array.isArray(array[0]) ? array[0] : array;
-  console.log(playlistArray);
-  if (!playlistArray || playlistArray.length === 0) {
+  if (playlistArray.length === 0) {
    return <button onClick={this.getPlaylists}>Get saved playlists</button>;
   } else {
    return (

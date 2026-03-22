@@ -8,8 +8,9 @@ import Playlist from "../playlist/PLaylist.jsx";
 import "./App.css";
 import Profile from "../profile/Profile.jsx";
 import Spotify from "../Utils/Spotify.js";
-
+import Callback from "../Utils/Callback.jsx";
 import UserPlaylist from "../playlist/UserPlaylist/UserPlaylist.jsx";
+import getUserPlaylists from "../Utils/GetUserPlaylist.js";
 
 class App extends React.Component {
  constructor(props) {
@@ -19,20 +20,12 @@ class App extends React.Component {
    playlistName: "",
    playlistTracks: [],
    savedPlaylists: [],
-   user: {
-    name: "",
-    email: "",
-    id: "",
-    login: sessionStorage.getItem("login") || false,
-   },
   };
   this.updatePlaylistName = this.updatePlaylistName.bind(this);
   this.savePlaylist = this.savePlaylist.bind(this);
   this.addTrack = this.addTrack.bind(this);
   this.removeTrack = this.removeTrack.bind(this);
   this.search = this.search.bind(this);
-  this.login = this.login.bind(this);
-  this.logout = this.logout.bind(this);
   this.getSavedPlaylists = this.getSavedPlaylists.bind(this);
  }
  addTrack(trackId) {
@@ -57,7 +50,7 @@ class App extends React.Component {
  removeTrack(track) {
   // Remove the track from the playlist
   const newPlaylistTracks = this.state.playlistTracks.filter(
-   (savedTrack) => savedTrack.id !== track.id
+   (savedTrack) => savedTrack.id !== track.id,
   );
   this.setState({ playlistTracks: newPlaylistTracks });
  }
@@ -85,7 +78,7 @@ class App extends React.Component {
 
   // filter out tracks already in the playlist
   const tracksFiltered = response.tracks.items.filter(
-   (track) => track.id !== this.state.playlistTracks.id
+   (track) => track.id !== this.state.playlistTracks.id,
   );
   console.log(tracksFiltered);
 
@@ -94,64 +87,9 @@ class App extends React.Component {
  }
 
  async getSavedPlaylists() {
-  const data = await Spotify.getUserPlaylists();
+  const data = await getUserPlaylists();
 
   this.setState({ savedPlaylists: data.items });
- }
- /*
- componentDidMount() {
-  // On component mount, check if redirected from Spotify auth with code and token
-  const path = window.location.pathname;
-  const code = new URLSearchParams(window.location.search).get("code");
-  const token = sessionStorage.getItem("access_token");
-
-  // Delay to ensure token is set before updating state
-  setTimeout(() => {
-   if (path === "/callback" && code && token) {
-    // Optional: restore login state from sessionStorage
-    console.log("setting user state");
-
-    const displayName = sessionStorage.getItem("user_name");
-    const email = sessionStorage.getItem("email");
-    this.setState({
-     user: {
-      name: displayName,
-      email: email,
-      login: true,
-     },
-    });
-   }
-  }, 1000);
- }*/
- async login() {
-  // Initiate Spotify login flow redirecting to Spotify auth page using PKCE auth flow
-
-  try {
-      // Redirect happens here once login triggered
-   await Spotify.fetchApiCode()
-    .then(async () => {
-     const urlParams = new URLSearchParams(window.location.search);
-     const code = urlParams.get("code");
-     sessionStorage.setItem("code", code);
-     const url = new URL(window.location.href);
-     url.searchParams.delete("code");
-     const updatedUrl = url.search ? url.href : url.href.replace("?", "");
-     window.history.replaceState({}, document.title, updatedUrl);
-    })
-    .then(() => Spotify.fetchToken())
-    .then(() => Spotify.fetchUser());
-  } catch (error) {
-   console.error("loginfailed", error);
-   //logout on error
-   this.setState({ user: { login: false } });
-  }
- }
-
- logout() {
-  // clear session data and reload app to logged out state
-  sessionStorage.clear();
-  window.location.href = "https://accounts.spotify.com/en/logout";
-  window.location.reload();
  }
 
  render() {
@@ -161,7 +99,8 @@ class App extends React.Component {
      My <span className="highlight">Sp</span>otify
     </h1>
     <div className="App">
-     <Profile user={this.state.user} login={this.login} logout={this.logout} />
+     <Callback />
+     <Profile />
      <UserPlaylist
       savedPlaylists={this.state.savedPlaylists}
       getSavedPlaylists={this.getSavedPlaylists}
