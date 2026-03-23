@@ -38,7 +38,7 @@ class Callback extends React.Component {
 
  render() {
   if (!sessionStorage.getItem("access_token")) {
-   return <div>Login to Authenticate</div>;
+   return <div style={{ color: "white" }}>Login to Authenticate</div>;
   }
 }
 }
