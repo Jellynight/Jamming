@@ -1,6 +1,6 @@
 /** @format */
 import React from "react";
-
+import "./profile.css";
 import Spotify from "../Utils/Spotify";
 
 class Profile extends React.Component {
