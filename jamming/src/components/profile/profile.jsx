@@ -33,6 +33,18 @@ class Profile extends React.Component {
      Login with Spotify
     </button>
    );
+  } else if (this.state.user.name === "" || this.state.user.email === "") {
+    return (
+      <div>
+        <p>
+          {window.alert("User Data did not load but you did log into Spotify and have been authenticated. Need a Premium Spotify account to gain full access.")}
+        </p>
+        <h2>Welcome</h2>
+        <button className="logout" onClick={this.logout}>
+          Logout
+        </button>
+      </div>
+    );
   } else {
    return (
     <div>

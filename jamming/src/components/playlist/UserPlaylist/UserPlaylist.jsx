@@ -2,21 +2,46 @@
 
 import React from "react";
 import Tracklist from "../../tracklist/Tracklist";
+import getUserPlaylists from "../../Utils/GetUserPlaylist";
 
 class UserPlaylist extends React.Component {
  constructor(props) {
   super(props);
   this.getPlaylists = this.getPlaylists.bind(this);
  }
- getPlaylists() {
-  this.props.getSavedPlaylists();
+ async getPlaylists() {
+  try {
+    const data = await getUserPlaylists();
+    this.setState({ savedPlaylists: data.items });
+  } catch (error) {
+    console.error("Error fetching user playlists:", error);
+    window.alert("Failed to fetch playlists. App account is not a Premium account.");
+  }
  }
  showPlaylist(id) {
   const pickedPlaylist = this.props.savedPlaylists.find(
    (playlist) => playlist.id === id
   );
   console.log(pickedPlaylist);
-  //const fetchedPlaylist = fetch(pickedPlaylist.tracks.href, {})
+  try {
+    fetch(`https://api.spotify.com/v1/playlists/${id}/tracks`, {
+     method: "GET",
+     headers: {
+      Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+      "Content-Type": "application/json",
+     },
+    })
+     .then((response) => response.json())
+     .then((data) => {
+      this.setState({ pickedPlaylist: { ...pickedPlaylist, tracks: data } });
+     })
+     .catch((error) => {
+      console.error("Error fetching playlist tracks:", error);
+     });
+
+  } catch (error) {
+    console.error("Error fetching playlist tracks:", error);
+  }
  }
 
  render() {

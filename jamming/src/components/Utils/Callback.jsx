@@ -37,8 +37,10 @@ class Callback extends React.Component {
  }
 
  render() {
-  return <div>Authorizing…</div>;
- }
+  if (!sessionStorage.getItem("access_token")) {
+   return <div>Login to Authenticate</div>;
+  }
+}
 }
 
 export default Callback;

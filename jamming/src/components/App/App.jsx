@@ -10,7 +10,7 @@ import Profile from "../profile/Profile.jsx";
 import Spotify from "../Utils/Spotify.js";
 import Callback from "../Utils/Callback.jsx";
 import UserPlaylist from "../playlist/UserPlaylist/UserPlaylist.jsx";
-import getUserPlaylists from "../Utils/GetUserPlaylist.js";
+import savePlaylist from "../Utils/SaveUserPlaylist.js";
 
 class App extends React.Component {
  constructor(props) {
@@ -26,7 +26,6 @@ class App extends React.Component {
   this.addTrack = this.addTrack.bind(this);
   this.removeTrack = this.removeTrack.bind(this);
   this.search = this.search.bind(this);
-  this.getSavedPlaylists = this.getSavedPlaylists.bind(this);
  }
  addTrack(trackId) {
   const track = this.state.searchResults.find((t) => t.id === trackId);
@@ -61,7 +60,7 @@ class App extends React.Component {
   console.log(this.state.playlistName);
   const trackURIs = this.state.playlistTracks.map((track) => track.uri);
   // Call the Spotify API to save the playlist with the given name and tracks
-  Spotify.savePlaylist(this.state.playlistName, trackURIs)
+  savePlaylist(this.state.playlistName, trackURIs)
    .then(() => {
     this.setState({
      playlistName: "New Playlist",
@@ -86,11 +85,6 @@ class App extends React.Component {
   this.setState({ searchResults: response.tracks.items });
  }
 
- async getSavedPlaylists() {
-  const data = await getUserPlaylists();
-
-  this.setState({ savedPlaylists: data.items });
- }
 
  render() {
   return (
@@ -103,7 +97,6 @@ class App extends React.Component {
      <Profile />
      <UserPlaylist
       savedPlaylists={this.state.savedPlaylists}
-      getSavedPlaylists={this.getSavedPlaylists}
      />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">

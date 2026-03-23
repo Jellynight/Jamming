@@ -1,4 +1,3 @@
-import React from "react";
 
 async function getUserPlaylists() {
   console.log("Fetching user playlists...");
