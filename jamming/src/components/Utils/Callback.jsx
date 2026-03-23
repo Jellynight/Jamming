@@ -1,37 +1,46 @@
 /** @format */
 
-import { useEffect, useRef } from "react";
-import Spotify from "./Spotify"; // adjust path as needed
+import React from "react";
+import Spotify from "../Utils/Spotify";
 
-export default function Callback() {
- const hasRun = useRef(false);
+class Callback extends React.Component {
+ async componentDidMount() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get("code");
+  if (code) {
+   sessionStorage.setItem("code", code);
+  }
+  const url = new URL(window.location.href);
+  url.searchParams.delete("code");
+  const updatedUrl = url.search ? url.href : url.href.replace("?", "");
+  window.history.replaceState({}, document.title, updatedUrl);
 
- useEffect(() => {
-  if (hasRun.current) return;
-  hasRun.current = true;
-  const code = new URLSearchParams(window.location.search).get("code");
-  if (!code) {
-   console.log("no code found");
-   sessionStorage.clear();
+  const verifier = sessionStorage.getItem("code_verifier");
+
+  if (!code || !verifier) {
+   console.log("Missing code or verifier");
    return;
   }
 
-  async function completeLogin() {
-   try {
-    await Spotify.fetchToken();
-    await Spotify.fetchUser();
-    sessionStorage.setItem("login", true);
-   } catch (error) {
-    console.error("Login failed:", error);
-   }
+  try {
+   // Exchange code for token
+   await Spotify.fetchToken();
+
+   // Fetch user info
+   await Spotify.fetchUser();
+
+   // Redirect to profile
+   window.location.href = "/profile";
+  } catch (err) {
+   console.error("Token exchange failed:", err);
   }
+ }
 
-  completeLogin();
- }, []);
-
- return (
-  <div>
-   <h2>Welcome back!</h2>
-  </div>
- );
+ render() {
+  if (!sessionStorage.getItem("access_token")) {
+   return <div style={{ color: "white" }}>Login to Authenticate</div>;
+  }
 }
+}
+
+export default Callback;

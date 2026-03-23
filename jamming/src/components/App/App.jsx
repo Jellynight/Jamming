@@ -9,6 +9,8 @@ import "./App.css";
 import Profile from "../profile/Profile.jsx";
 import Spotify from "../Utils/Spotify.js";
 import Callback from "../Utils/Callback.jsx";
+import UserPlaylist from "../playlist/UserPlaylist/UserPlaylist.jsx";
+import savePlaylist from "../Utils/SaveUserPlaylist.js";
 
 class App extends React.Component {
  constructor(props) {
@@ -17,12 +19,7 @@ class App extends React.Component {
    searchResults: [],
    playlistName: "",
    playlistTracks: [],
-   user: {
-    name: "",
-    email: "",
-    id: "",
-    login: false,
-   },
+   savedPlaylists: [],
   };
   this.updatePlaylistName = this.updatePlaylistName.bind(this);
   this.savePlaylist = this.savePlaylist.bind(this);
@@ -31,7 +28,6 @@ class App extends React.Component {
   this.search = this.search.bind(this);
  }
  addTrack(trackId) {
-  
   const track = this.state.searchResults.find((t) => t.id === trackId);
   if (!trackId) {
    console.error("Invalid track object:", trackId);
@@ -53,7 +49,7 @@ class App extends React.Component {
  removeTrack(track) {
   // Remove the track from the playlist
   const newPlaylistTracks = this.state.playlistTracks.filter(
-   (savedTrack) => savedTrack.id !== track.id
+   (savedTrack) => savedTrack.id !== track.id,
   );
   this.setState({ playlistTracks: newPlaylistTracks });
  }
@@ -61,10 +57,10 @@ class App extends React.Component {
   this.setState({ playlistName: name });
  }
  savePlaylist() {
-      console.log(this.state.playlistName);
+  console.log(this.state.playlistName);
   const trackURIs = this.state.playlistTracks.map((track) => track.uri);
   // Call the Spotify API to save the playlist with the given name and tracks
-  Spotify.savePlaylist(this.state.playlistName, trackURIs)
+  savePlaylist(this.state.playlistName, trackURIs)
    .then(() => {
     this.setState({
      playlistName: "New Playlist",
@@ -76,58 +72,32 @@ class App extends React.Component {
 
  async search(term) {
   // Call the Spotify API to search for tracks with the given term
+
   const response = await Spotify.search(term);
+
+  // filter out tracks already in the playlist
+  const tracksFiltered = response.tracks.items.filter(
+   (track) => track.id !== this.state.playlistTracks.id,
+  );
+  console.log(tracksFiltered);
+
+  // Update the search results state with the retrieved tracks
   this.setState({ searchResults: response.tracks.items });
  }
 
-async componentDidMount() {
-  const path = window.location.pathname;
-  const code = new URLSearchParams(window.location.search).get("code");
-const token = sessionStorage.getItem("access_token");
-
-
-  setTimeout(async () => {
-  if (path === "/callback" && code && token) {
-   // Optional: restore login state from sessionStorage
-   console.log("setting user state")
-   const displayName = await sessionStorage.getItem("user_name");
-   const email = await sessionStorage.getItem("email");
-   this.setState({
-    user: {
-     name: displayName,
-     email: email,
-     login: true,
-    },
-   });
-  }
- }, 1000);
-}
-async login() {
-   console.log(this.state);   
-  try {
-   await Spotify.fetchApiCode(); // Redirect happens here
-   
-  } catch (error) {
-   console.error("loginfailed", error);
-   this.setState({ user: { login: false } });
-  }
- }
-
-logout() {
-  sessionStorage.clear();
-  window.location.href = "https://accounts.spotify.com/en/logout";
-  window.location.reload();
- }
 
  render() {
   return (
    <div>
     <h1>
-     Ja<span className="highlight">mmm</span>ing
+     My <span className="highlight">Sp</span>otify
     </h1>
     <div className="App">
-     <Profile user={this.state.user} login={this.login} logout={this.logout} />
      <Callback />
+     <Profile />
+     <UserPlaylist
+      savedPlaylists={this.state.savedPlaylists}
+     />
      <SearchBar onSearch={this.search} />
      <div className="App-playlist">
       <SearchResults

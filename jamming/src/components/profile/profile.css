@@ -1,0 +1,25 @@
+
+* {
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+  width: 10rem;
+  padding: .77rem 0;
+  border-radius: 54px;
+  border-width: 0px;
+  margin-top: 1.27rem;
+  background-color: #5e596e;
+  text-align: center;
+  font-size: .83rem;
+  transition: background-color .25s;
+  color: #ffffff;
+  font-weight: 500;
+  margin: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+button:hover {
+  background-color: #6c41ec;
+}

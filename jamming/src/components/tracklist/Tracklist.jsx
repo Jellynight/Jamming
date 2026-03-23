@@ -5,10 +5,12 @@ import "./tracklist.css";
 import Track from "../track/Track.jsx";
 
 class Tracklist extends React.Component {
+      // If no tracks are passed as props, display a message
  render() {
   if (this.props.tracks.length < 0 || !this.props.tracks) {
-   return <div>No tracks found</div>;
-  } else {
+   return <button></button>;
+  } else { 
+      // Render the list of tracks using the Track component passing necessary props
    return (
     <div className="TrackList">
      {this.props.tracks
