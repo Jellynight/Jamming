@@ -4,6 +4,10 @@
 
 For anyone apart from myself wanting to use this application you need for me to include your email to the list of users. Max of 5 users. 
 
+### Client Secret
+The client secret was not included in this repository but in my local env files for security reasons. You can create your own client secret by creating a Spotify account and adding the application to it and get your own client secret to use.  
+
+### Why create this App?
 This web app is setup using [Create React App](https://github.com/facebook/create-react-app) and uses react claas components. It was a project through the Full Stack Developer certification from Learning People. This project taught me about creating API requests and handling the response. 
 
 ## OAuth code flow
